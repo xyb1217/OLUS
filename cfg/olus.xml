@@ -6,6 +6,7 @@
 		<thread count = "3"/>
 		<!-- 1:debug, 2:info, 3:warn, 4:error-->
 		<log level = "1"/>
+		<conn count = "3"/>
 	</common>
 
 	<localAddr>

@@ -45,6 +45,12 @@ bool Cfg::load(const char *cfg_file)
 			xml_attribute count = thread.attribute("count");
 			threads_ = count.as_int();
 		}
+
+        xml_node conn = common.child("conn");
+		if (!conn.empty()){
+			xml_attribute count = conn.attribute("count");
+			conns_ = count.as_int();
+		}
 	}
 
     xml_node localAddr = root.child("localAddr");

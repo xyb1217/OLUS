@@ -12,6 +12,7 @@ class Cfg
 
     public:
         int thread(){return threads_;}
+        int conn(){return conns_;}
         int log_level(){return log_level_;}
         int listen_port(){return listen_port_;}
         int run_id(){return run_id_;}
@@ -34,6 +35,7 @@ class Cfg
         
     private:
         int threads_;
+        int conns_;
         int log_level_;
         int listen_port_;
         char *listen_ip_;
