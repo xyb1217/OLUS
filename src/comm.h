@@ -14,6 +14,9 @@ struct OLUPH
     unsigned char flag1;
     unsigned char flag2;
     unsigned char len;
+    unsigned char cmd;
+    unsigned int dev_id;
+    unsigned char dev_type;
 
     OLUPH(){
         memset(this, 0, sizeof(OLUPH));
@@ -22,10 +25,7 @@ struct OLUPH
 
 
 struct VersionQuery
-{
-    unsigned char cmd;
-    unsigned int dev_id;
-    unsigned char dev_type;
+{ 
     unsigned char check;
     unsigned char end;
 
@@ -37,9 +37,6 @@ struct VersionQuery
 
 struct VersionResp
 {
-    unsigned char cmd;
-    unsigned int dev_id;
-    unsigned char dev_type;
     unsigned char curr_version;
     unsigned char check;
     unsigned char end;
@@ -50,10 +47,8 @@ struct VersionResp
 };
 
 
-struct FirmwareDown{
-    unsigned char cmd;
-    unsigned int dev_id;
-    unsigned char dev_type;
+struct FirmwareDown
+{
     unsigned char check;
     unsigned char end;
 
@@ -65,9 +60,6 @@ struct FirmwareDown{
 
 struct FirmwareResp
 {
-    unsigned char cmd;
-    unsigned int dev_id;
-    unsigned char dev_type;
     unsigned char verify;
     unsigned int down_size;
     unsigned char check;

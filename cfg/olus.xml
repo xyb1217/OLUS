@@ -1,3 +1,4 @@
+
 <?xml version="1.4" encoding="utf-8"?>
 <config>
 	<common>
@@ -11,9 +12,9 @@
 		<addr ip="127.0.0.1" port="8080"/>
 	</localAddr>
 
-	<updatedFile>
-		<file path="./"  name="file" version="1" /> 
-	</updatedFile>
-	
+	<downFirmware>
+		<firmware path="./"  name="file" version="1" /> 
+	</downFirmware>
 </config>
+
 
