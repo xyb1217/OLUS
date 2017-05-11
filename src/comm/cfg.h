@@ -19,6 +19,7 @@ class Cfg
         int firmware_path(){return firmware_path_;}
         int firmware_name(){return firmware_name_;}
         int firmware_version(){return firmware_version;}
+        int firmware_file(){return firmware_file_;}
 
     private:
         Cfg(){
@@ -43,6 +44,7 @@ class Cfg
         char *firmware_path_;
         char *firmware_name_;
         char *firmware_version_;
+        char *firmware_file_;
         char *listen_ip_;
 };
 

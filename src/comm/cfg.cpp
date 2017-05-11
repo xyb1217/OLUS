@@ -94,6 +94,13 @@ bool Cfg::load(const char *cfg_file)
             memset(firmware_version_, 0, strlen(version.as_string())+1);
             strcpy(firmware_version_, version.as_string());
 
+            
+            int len = strlen(path.as_string())+strlen(name.as_string())+1;
+            firmware_file_ = new char[len];
+            if (!firmware_file_) return false;
+            memset(firmware_file_, 0, len);
+            sprintf(firmware_file_, "%s%s", path.as_string(), name.as_string());
+
 		}
 	}
 

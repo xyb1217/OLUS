@@ -8,6 +8,9 @@
 #define CMD_VERSION_RESP  0x90
 #define CMD_FIRMWARE_RESP 0xA0
 
+#define LEN_VERSION_QUERY  11
+#define LEN_FIRMWARE_DOWN  12
+
 
 struct OLUPH 
 {
@@ -69,7 +72,6 @@ struct FirmwareResp
         memset(this, 0, sizeof(FirmwareResp));
     }
 };
-
 
 
 #endif
