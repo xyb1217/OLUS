@@ -17,10 +17,10 @@ Core::~Core()
 }
 
 
-int Core::process(int fd)
+int Core::process(char *rcv_buffer, int len, char **out_buffer, int *out_len)
 {
     curr_fd_ = fd;
-    int ret = parse(fd);
+    int ret = parse(rcv_buffer, len);
     if (ret != 0) {
         return -1;
     }
@@ -34,9 +34,10 @@ int Core::process(int fd)
 
 
 
-int Core::parse()
+int Core::parse(const char *rcv_buffer, int len)
 {
-    int ret = recvn();
+    //½âÎö
+    int ret = olup_.process(rcv_buffer, len);
     if (ret != 0){
         return -1;
     }
@@ -57,42 +58,6 @@ int Core::parse()
         return -1;
     }
     
-    return 0;
-}
-
-
-int Core::recvn()
-{
-    //parse head: flag1,flag2,len
-    char head[3] = {0};
-    ssize_t recvn = Recvn(curr_fd_, head, 3);
-    if (recvn != 3){
-        return -1;
-    }
-
-    //head[2]:body len
-    rcv_len_ = head[2]+3;
-    if (rcv_buffer_) 
-        delete [] rcv_buffer_;
-    
-    rcv_buffer_ = new char[rcv_len_];
-    if (!rcv_buffer_){
-        return -1;
-    }
-    memset(rcv_buffer_, 0, rcv_len_);
-    memcpy(rcv_buffer_, head, 3);
-
-    recvn = Recvn(curr_fd_, rcv_buffer_+3, head[2]);
-    if (recvn != head[2]){
-        return -1;
-    }
-
-    //½âÎö
-    int ret = olup_.process(rcv_buffer_, rcv_len_);
-    if (ret != 0){
-        return -1;
-    }
-
     return 0;
 }
 

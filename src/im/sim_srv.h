@@ -11,6 +11,8 @@ class SimSrv
         int process(int fd);
 
     private:
+        char *rcv_buffer_;
+        int rcv_len_;
 
         
 };
