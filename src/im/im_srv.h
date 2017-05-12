@@ -8,9 +8,7 @@ class ImSrv
         int process();
         
     private:
-        
-        int sim(int conns, int threads);
-        static int parse(int fd);
+        static int sim(int fd);
         
         
 };
