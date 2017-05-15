@@ -1,4 +1,17 @@
 
+#include "comm/cfg.h"
+#include "im/im_srv.h"
+
+#include <ccm/clog.h>
+#include <ccm/ccm.h>
+
+#include <stdlib.h>
+#include <signal.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
+
 
 
 #define CFG_FILE "../cfg/olus.xml"
@@ -40,7 +53,7 @@ void init()
 	}
 
     CLog *pLog = CLog::inst();
-	if (!pLog->init(LOG_PATH, "pre_sign")){
+	if (!pLog->init(LOG_PATH, "olus")){
 		PRINTF("init log error, exit");
 		exit(1);
 	}
@@ -56,7 +69,7 @@ void init()
 }
 
 
-void start_im()
+void im()
 {
     ImSrv im_srv;
     int ret = im_srv.process();
@@ -71,7 +84,7 @@ void start_im()
 int main()
 {
     init();
-    start_im();
+    im();
 
     while (1)
         sleep(60);

@@ -2,6 +2,9 @@
 #define _QUERY_VERSION_H_
 
 
+#include "comm/olup.h"
+
+
 class QueryVersion
 {
     public:
@@ -9,7 +12,7 @@ class QueryVersion
         ~QueryVersion();
 
     public:
-        int process(const OLUP &olup);
+        int process(OLUP &olup);
 
     private:
         

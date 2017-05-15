@@ -1,5 +1,7 @@
 #include "down_firmware.h"
+#include "comm/cfg.h"
 
+#include <stdio.h>
 
 DownFirmware::DownFirmware(){}
 
@@ -7,7 +9,7 @@ DownFirmware::DownFirmware(){}
 DownFirmware::~DownFirmware(){}
 
 
-int DownFirmware::process(const OLUP &olup)
+int DownFirmware::process(OLUP &olup)
 {   
     if (olup.cmd() != CMD_FIRMWARE_DOWN)
         return -1;
@@ -27,24 +29,24 @@ int DownFirmware::process(const OLUP &olup)
 }
 
 
-int DownFirmware::down_info(const OLUP &olup)
+int DownFirmware::down_info(OLUP &olup)
 {
     FILE *file = fopen(Cfg::inst().firmware_file(), "r");
     if (!file) return -1;
     
-    char *read_buffer = NULL; 
+    char *down_info = NULL; 
     fseek(file, 0, SEEK_END);
     int len = ftell(file);
-    read_buffer = new char[len+1]; 
-    if (!read_buffer) return -1;
-    
-    olup.down_info() = read_buffer;
+    down_info = new char[len+1]; 
+    if (!down_info) return -1;
+
     rewind(file);
-    fread(read_buffer, 1, len, file);
-    read_buffer[len] = 0;
+    fread(down_info, 1, len, file);
+    down_info[len] = 0;
     fclose(file); 
 
-    olup.firmware_resp().down_size = len;
+    olup.set_down_info(down_info, len);
+    
     return len;
 }
 

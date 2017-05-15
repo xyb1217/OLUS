@@ -1,32 +1,32 @@
 #include "im_srv.h"
+#include "comm/cfg.h"
+#include "core/core.h"
+
+#include <ccm/sim_srv.h>
+#include <ccm/clog.h>
+
 
 
 int ImSrv::process()
 {
-    if (Cfg::inst().im_mode()== 0){
-        SimSrv sim_srv(ImSrv::parse, 
-                        Cfg::inst().conn(), 
-                        Cfg::inst().thread());
-        sim_srv.SetName("sim_srv");
-        sim_srv.AddListenPort(Cfg::inst().listen_port());
-        bool bret = sim_srv.start();
-        if (!bret){
-            SVC_LOG((LM_INFO, "start sim_srv error"));
-            return -1;
-        }
-        SVC_LOG((LM_INFO, "start sim_srv success"));
-    }
-    else {
+    SimSrv sim_srv(ImSrv::parse,  MAX_CONNS, 
+                    Cfg::inst().threads());
+    sim_srv.set_name("sim_srv");
+    sim_srv.AddListenPort(Cfg::inst().listen_port());
+    bool bret = sim_srv.start();
+    if (!bret){
+        SVC_LOG((LM_INFO, "start sim_srv error"));
         return -1;
     }
+    SVC_LOG((LM_INFO, "start sim_srv success"));
     return 0;
 }
 
 
-int ImSrv::sim(int fd)
-{
-    SimSrv sim_srv;
-    int ret = sim_srv.process(fd);
+int ImSrv::parse(int fd)
+{   
+    Core core;
+    int ret = core.process(fd);
     if (ret != 0)
         return -1;
     return 0;

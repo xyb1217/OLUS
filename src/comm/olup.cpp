@@ -3,6 +3,9 @@
 
 int OLUP::process(const char *in, int len)
 {
+    if (len != sizeof(OLUPH))
+        return -1;
+    
     memcpy(&oluph_, in, sizeof(OLUPH));
     if (oluph_.cmd == CMD_VERSION_QUERY){
         if (oluph_.len != LEN_VERSION_QUERY-3){

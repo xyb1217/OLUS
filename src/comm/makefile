@@ -3,8 +3,7 @@ PRO_NAME=comm
 
 DIR=$(shell pwd)
 SRC_DIR=$(DIR)
-INC_DIR=-I$(DIR)/../ -I/usr/local/include/hiredis -I/usr/local/include \
--I/usr/local/mysql/include -I/usr/local/ssl/include -I/usr/include/mysql
+INC_DIR=-I$(DIR)/../ -I/usr/local/include 
 
 ######“¿¿µø‚#####
 LIBS_DIR=

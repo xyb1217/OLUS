@@ -2,6 +2,7 @@
 #ifndef _COMM_H_
 #define _COMM_H_
 
+#include <string.h>
 
 #define CMD_VERSION_QUERY 0x10
 #define CMD_FIRMWARE_DOWN 0x20

@@ -1,4 +1,5 @@
 #include "query_version.h"
+#include "comm/cfg.h"
 
 
 QueryVersion::QueryVersion(){}
@@ -7,7 +8,7 @@ QueryVersion::QueryVersion(){}
 QueryVersion::~QueryVersion(){}
 
 
-int QueryVersion::process(const OLUP &olup)
+int QueryVersion::process(OLUP &olup)
 {   
     if (olup.cmd() != CMD_VERSION_QUERY)
         return -1;

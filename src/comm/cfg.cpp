@@ -1,5 +1,11 @@
 #include "cfg.h"
 
+#include <ccm/clog.h>
+#include <ccm/pugixml.hpp>
+
+
+using namespace pugi;
+
 
 bool Cfg::init(const char *cfg_file)
 {
@@ -89,10 +95,12 @@ bool Cfg::load(const char *cfg_file)
             memset(firmware_name_, 0, strlen(name.as_string())+1);
             strcpy(firmware_name_, name.as_string());
 
-            firmware_version_ = new char[strlen(version.as_string())+1];
+            firmware_version_ = version.as_int();
+                /*
+            firmware_version_ =  new unsigned char[strlen(version.as_string())+1];
             if (!firmware_version_) return false;
             memset(firmware_version_, 0, strlen(version.as_string())+1);
-            strcpy(firmware_version_, version.as_string());
+            strcpy(firmware_version_, version.as_string());*/
 
             
             int len = strlen(path.as_string())+strlen(name.as_string())+1;

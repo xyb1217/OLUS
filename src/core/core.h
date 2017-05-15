@@ -2,6 +2,7 @@
 #ifndef _CORE_H_
 #define _CORE_H_
 
+#include "comm/olup.h"
 
 class Core
 {
@@ -10,10 +11,11 @@ class Core
         ~Core();
         
     public:
-        int process(char *rcv_buffer, int len, char **out_buffer, int *out_len);
+        int process(int fd);
         
     private:
-        int parse(const char *rcv_buffer, int len);
+        int readn();
+        int parse();
         int version_query();
         int firmware_down();
         int response();
@@ -23,7 +25,6 @@ class Core
         OLUP olup_;
         char *rcv_buffer_;
         int rcv_len_;
-        
 };
 
 #endif

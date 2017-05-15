@@ -1,20 +1,15 @@
 
 ##############################项目路径和程序名称#############################
-PRO_NAME=pre_sign
+PRO_NAME=lr_olus
 
 DIR=$(shell pwd)
 SRC_DIR=$(DIR)
-INC_DIR=-I$(DIR) -I$(DIR)/.. -I/usr/local/include/ccm \
-		-I/usr/local/include/hiredis -I/usr/local/mysql/include\
-		-I/usr/local/ssl/include -I/usr/include/mysql
+INC_DIR=-I$(DIR) -I$(DIR)/.. -I/usr/local/include/ccm
 
 ######依赖库#####-lstdc++ 
-LIBS_DIR=-L/usr/lib64 -L$(DIR)/../../lib -L/usr/local/lib \
-		-L/usr/local/ssl/lib -L/usr/local/mysql/lib -L/usr/lib64/mysql
+LIBS_DIR=-L/usr/lib64 -L$(DIR)/../../lib -L/usr/local/lib 
 
-LIBS_NAME=-lcomm -lim -lfre_sign -lins_sign -lins_sync -lcache -lwossl \
-		-lccm_cm -lccm_im -lccm_db -levent -lxml2 -lcrypto -lssl -lpthread\
-		-levent -levhtp -luuid -lstdc++ -lmysqlclient -lhiredis -ljsoncpp
+LIBS_NAME= -lim -lcore -lcomm -lccm_cm -lccm_im -lxml2 -lpthread -lstdc++
 		
 LIBS=$(LIBS_DIR) $(LIBS_NAME)
 
