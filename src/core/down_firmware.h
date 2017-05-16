@@ -13,7 +13,7 @@ class DownFirmware
         int process(OLUP &olup);
 
     private:
-        int down_info(OLUP &olup);
+        int get_down_info(OLUP &olup);
         
 };
 

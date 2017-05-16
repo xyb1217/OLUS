@@ -4,8 +4,10 @@
 
 #include <string.h>
 #include <sys/types.h>
+#include <stdio.h>
 
 #include <ccm/im_util.h>
+#include <ccm/clog.h>
 
 
 Core::Core()
@@ -30,16 +32,20 @@ int Core::process(int fd)
 {
     curr_fd_ = fd;
     int ret = readn();
-    if (ret != 0)
+    if (ret != 0){
+		SVC_LOG((LM_ERROR, "rcv data failed"));
         return -1;
+    }
     
     ret = parse();
     if (ret != 0) {
+		SVC_LOG((LM_ERROR, "parse failed"));
         return -1;
     }
 
     ret = response();
     if (ret != 0) {
+		SVC_LOG((LM_ERROR, "response failed"));
         return -1;
     }
     return 0;
@@ -51,27 +57,34 @@ int Core::readn()
 {
     //parse head: flag1,flag2,len
     char head[3] = {0};
-    ssize_t recvn = Recvn(curr_fd_, head, 3);
+    ssize_t recvn = RecvTimeout(curr_fd_, head, 3, 3);
     if (recvn != 3){
+		SVC_LOG((LM_ERROR, "read the first 3 bytes error, recvn:%u", recvn));
         return -1;
     }
 
     //head[2]:body len
-    rcv_len_ = head[2]+3;
+    rcv_len_ = head[2];
+    if (rcv_len_ <= 0) return -1;
+    
+    rcv_len_ += 3;
     if (rcv_buffer_) 
         delete [] rcv_buffer_;
     
     rcv_buffer_ = new char[rcv_len_];
     if (!rcv_buffer_){
+		SVC_LOG((LM_ERROR, "new error"));
         return -1;
     }
     memset(rcv_buffer_, 0, rcv_len_);
     memcpy(rcv_buffer_, head, 3);
 
-    recvn = Recvn(curr_fd_, rcv_buffer_+3, head[2]);
+    recvn = RecvTimeout(curr_fd_, rcv_buffer_+3, head[2], 3);
     if (recvn != head[2]){
+		SVC_LOG((LM_ERROR, "read body error"));
         return -1;
     }
+
     return 0;
 }
 
@@ -82,22 +95,26 @@ int Core::parse()
     //½âÎö
     int ret = olup_.process(rcv_buffer_, rcv_len_);
     if (ret != 0){
+		SVC_LOG((LM_ERROR, "parse on line update protocol failed"));
         return -1;
     }
 
     if (olup_.cmd() == CMD_VERSION_QUERY){
         ret = version_query();
         if (ret != 0){
+            SVC_LOG((LM_ERROR, "query version failed"));
             return -1;
         }
     }
     else if (olup_.cmd() == CMD_FIRMWARE_DOWN){
         ret = firmware_down();
         if (ret != 0){
+            SVC_LOG((LM_ERROR, "down firmware failed"));
             return -1;
         }
     }
     else {
+		SVC_LOG((LM_ERROR, "on line update protocol cmd error"));
         return -1;
     }
     
@@ -129,30 +146,52 @@ int Core::firmware_down()
 
 int Core::response()
 {
+    
     if (olup_.cmd() == CMD_VERSION_QUERY){
+        
+        OLUPH *oluph = olup_.oluph();
+        oluph->len = 0x09;
+        oluph->cmd = 0x90;
+
         ssize_t writen = Writen(curr_fd_, olup_.oluph(), sizeof(OLUPH));
-        if (writen != sizeof(OLUPH))
+        if (writen != sizeof(OLUPH)){
+            SVC_LOG((LM_ERROR, "writen OLUPH failed"));
             return -1;
+        }
         
         writen = Writen(curr_fd_, olup_.version_resp(), sizeof(VersionResp));
-        if (writen != sizeof(VersionResp))
+        if (writen != sizeof(VersionResp)){
+            SVC_LOG((LM_ERROR, "writen VersionResp failed"));
             return -1;
+        }
         
     }
     else if (olup_.cmd() == CMD_FIRMWARE_DOWN){
+        
+        OLUPH *oluph = olup_.oluph();
+        oluph->len = 0x0D;
+        oluph->cmd = 0xA0;
+
         ssize_t writen = Writen(curr_fd_, olup_.oluph(), sizeof(OLUPH));
-        if (writen != sizeof(OLUPH))
+        if (writen != sizeof(OLUPH)){
+            SVC_LOG((LM_ERROR, "writen OLUPH failed"));
             return -1;
+        }
         
         writen = Writen(curr_fd_, olup_.firmware_resp(), sizeof(FirmwareResp));
-        if (writen != sizeof(FirmwareResp))
+        if (writen != sizeof(FirmwareResp)){
+            SVC_LOG((LM_ERROR, "writen FirmwareResp failed"));
             return -1;
+        }
         
         writen = Writen(curr_fd_, olup_.down_info(), olup_.down_size());
-        if (writen != olup_.down_size())
+        if (writen != olup_.down_size()){
+            SVC_LOG((LM_ERROR, "writen down info failed"));
             return -1;
+        }
     }
     else {
+        SVC_LOG((LM_ERROR, "on line update protocol cmd error"));
         return -1;
     }
     

@@ -39,23 +39,20 @@ bool Cfg::load(const char *cfg_file)
 			memset(run_id_, 0, strlen(id.as_string())+1);
 			strcpy(run_id_, id.as_string());
 		}
+        printf("run id: %s\n", run_id_);
 	
 		xml_node log = common.child("log");
 		if (!log.empty()){
 			xml_attribute level = log.attribute("level");
 			log_level_ = level.as_int();
+            printf("log level: %d\n", log_level_);
 		}
 
 		xml_node thread = common.child("thread");
 		if (!thread.empty()){
 			xml_attribute count = thread.attribute("count");
 			threads_ = count.as_int();
-		}
-
-        xml_node conn = common.child("conn");
-		if (!conn.empty()){
-			xml_attribute count = conn.attribute("count");
-			conns_ = count.as_int();
+            printf("threads: %d\n", threads_);
 		}
 	}
 
@@ -72,18 +69,19 @@ bool Cfg::load(const char *cfg_file)
             memset(listen_ip_, 0, strlen(ip.as_string())+1);
             strcpy(listen_ip_, ip.as_string());
 			listen_port_ = port.as_int();
+            printf("ip: %s, port: %d\n", listen_ip_, listen_port_);
 		}
 	}
 	
 	xml_node downFirmware = root.child("downFirmware");
 	if (!downFirmware.empty())
 	{
-		xml_node addr = downFirmware.child("addr");
-		if (!addr.empty())
+		xml_node firmware = downFirmware.child("firmware");
+		if (!firmware.empty())
 		{
-			xml_attribute path = addr.attribute("path");
-			xml_attribute name = addr.attribute("name"); 
-			xml_attribute version = addr.attribute("version"); 
+			xml_attribute path = firmware.attribute("path");
+			xml_attribute name = firmware.attribute("name"); 
+			xml_attribute version = firmware.attribute("version"); 
             
             firmware_path_ = new char[strlen(path.as_string())+1];
             if (!firmware_path_) return false;
@@ -108,6 +106,9 @@ bool Cfg::load(const char *cfg_file)
             if (!firmware_file_) return false;
             memset(firmware_file_, 0, len);
             sprintf(firmware_file_, "%s%s", path.as_string(), name.as_string());
+            
+            printf("path: %s, name: %s, file: %s, version: %d\n", 
+                firmware_path_, firmware_name_, firmware_file_, firmware_version_);
 
 		}
 	}

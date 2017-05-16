@@ -1,5 +1,6 @@
 #include "query_version.h"
 #include "comm/cfg.h"
+#include <ccm/clog.h>
 
 
 QueryVersion::QueryVersion(){}
@@ -9,10 +10,11 @@ QueryVersion::~QueryVersion(){}
 
 
 int QueryVersion::process(OLUP &olup)
-{   
-    if (olup.cmd() != CMD_VERSION_QUERY)
+{ 
+    if (olup.cmd() != CMD_VERSION_QUERY){
+        SVC_LOG((LM_ERROR, "query version protocol cmd error"));
         return -1;
-
+    }
     
     VersionResp *version_resp;
     version_resp = olup.version_resp();

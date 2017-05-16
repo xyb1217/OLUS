@@ -6,14 +6,15 @@
 #include <ccm/clog.h>
 
 
+SimSrv *sim_srv = NULL;
 
 int ImSrv::process()
 {
-    SimSrv sim_srv(ImSrv::parse,  MAX_CONNS, 
+    sim_srv = new SimSrv(ImSrv::parse,  MAX_CONNS, 
                     Cfg::inst().threads());
-    sim_srv.set_name("sim_srv");
-    sim_srv.AddListenPort(Cfg::inst().listen_port());
-    bool bret = sim_srv.start();
+    sim_srv->set_name("sim_srv");
+    sim_srv->AddListenPort(Cfg::inst().listen_port());
+    bool bret = sim_srv->start();
     if (!bret){
         SVC_LOG((LM_INFO, "start sim_srv error"));
         return -1;
@@ -24,13 +25,12 @@ int ImSrv::process()
 
 
 int ImSrv::parse(int fd)
-{   
+{
     Core core;
     int ret = core.process(fd);
     if (ret != 0)
         return -1;
     return 0;
 }
-
 
 

@@ -45,12 +45,6 @@ void init()
 	sigaddset(&ipc_mask, SIGCHLD);
 	pthread_sigmask(SIG_BLOCK,&ipc_mask,NULL);
 	pipe_sig_handle();
-	
-	bool bret = Cfg::inst().init(CFG_FILE);
-	if (!bret){
-		PRINTF("init cfg error, exit");
-		exit(1);
-	}
 
     CLog *pLog = CLog::inst();
 	if (!pLog->init(LOG_PATH, "olus")){
@@ -63,7 +57,14 @@ void init()
 		pLog->finalize();
 		PRINTF("start log error, exit");
 		exit(1);
-	}    
+	}
+
+    bool bret = Cfg::inst().init(CFG_FILE);
+	if (!bret){
+		PRINTF("init cfg error, exit");
+		exit(1);
+	}
+
 	SVC_LOG((LM_INFO, "init success"));
 	return ;
 }
@@ -81,8 +82,37 @@ void im()
 }
 
 
+void daemon() 
+{
+	int pid, fd;
+	if ((pid = fork()) == -1) exit(1);
+	if (pid != 0) exit(0);
+	if (setsid() == -1) exit(1);
+	if ((pid = fork()) == -1) exit(1);
+	if (pid != 0) exit(0);
+	//for (int i = 0; i < NOFILE; i++)
+	//	close(i);
+	int fdtablesize = getdtablesize();
+	for (fd = 3; fd < fdtablesize; fd++)
+	{
+		close(fd);
+	}
+	//if (chdir("/") == -1) exit(1);
+	//if ((fd = open("/dev/null", O_RDWR)) == -1) exit(1);
+	//dup2(fd, STDIN_FILENO);
+	//dup2(fd, STDOUT_FILENO);
+	//dup2(fd, STDERR_FILENO);
+	//close(fd);
+	if ((int)umask(0) == -1) exit(1);
+	if (signal(SIGCHLD, SIG_IGN) == SIG_ERR) exit(1);
+	return ;
+}
+
+
+
 int main()
 {
+    daemon();
     init();
     im();
 
