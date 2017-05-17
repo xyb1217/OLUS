@@ -1,23 +1,21 @@
-
 ##############################项目路径和程序名称#############################
-PRO_NAME=lr_olus
+PRO_NAME=cache
 
 DIR=$(shell pwd)
 SRC_DIR=$(DIR)
-INC_DIR=-I$(DIR) -I$(DIR)/.. -I/usr/local/include/ccm
+INC_DIR=-I$(DIR)/../ -I/usr/local/ssl/include/
 
-######依赖库#####-lstdc++ 
-LIBS_DIR=-L/usr/lib64 -L$(DIR)/../../lib -L/usr/local/lib 
-
-LIBS_NAME= -lim -lcore -lcomm -lcache -lccm_cm -lccm_im -lxml2 -lpthread\
--lstdc++ -lcrypto
-		
+######依赖库#####
+LIBS_DIR=
+LIBS_NAME=
 LIBS=$(LIBS_DIR) $(LIBS_NAME)
 
-BIN_NAME=$(PRO_NAME)
+LIB_NAME=lib$(PRO_NAME).a
+#BIN_NAME=
 
-SRC_BIN=$(DIR)/$(BIN_NAME)
-DEST_BIN_DIR=$(DIR)/../../bin
+SRC_LIB=$(DIR)/$(LIB_NAME)
+SRC_INC=$(DIR)/*.h $(DIR)/*.hpp
+DEST_LIB_DIR=$(DIR)/../../lib/
 
 
 ##############################OBJ文件及路径##################################
@@ -29,17 +27,17 @@ OBJS=$(SRCS:.cpp=.o)
 #############################编译选项及编译器################################
 CC=g++
 #CFLAGS=-Wall -m64 -W -g -fPIC -finput-charset=gb2312
-CFLAGS=-Wall -m64 -W -g -O2 -fPIC -D NDEBUG 
+CFLAGS=-Wall -m64 -W -g -O2 -fPIC -D NDEBUG
 LDFLAGS=-shared -fPIC
 
 
 ###############################编译目标######################################
 .PHONY: all clean rebuild
 all:$(OBJS) 
-	$(CC) -o $(SRC_BIN) $(OBJS) $(CFLAGS) $(LIBS)
-	mkdir -p $(DEST_BIN_DIR)
-	cp -rf $(SRC_BIN) $(DEST_BIN_DIR)
-
+	ar -r $(LIB_NAME) $(OBJS)
+	mkdir -p $(DEST_LIB_DIR)
+	cp -rf $(SRC_LIB) $(DEST_LIB_DIR)
+	
 
 $(OBJS):%.o:%.cpp
 	$(CC) $(CFLAGS) $(INC_DIR) -c  $< -o $@
@@ -47,6 +45,6 @@ $(OBJS):%.o:%.cpp
 rebuild: clean all
 
 clean:
-	rm -rf $(OBJS) $(BIN_NAME) $(DEST_BIN_DIR)/$(BIN_NAME) 
+	rm -rf $(OBJS) $(SRC_LIB) $(DEST_LIB_DIR)/$(LIB_NAME) $(DEST_INC_DIR)/*.h
 
-
+	

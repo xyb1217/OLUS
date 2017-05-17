@@ -6,6 +6,7 @@
 		<thread count = "3"/>
 		<!-- 1:debug, 2:info, 3:warn, 4:error-->
 		<log level = "1"/>
+		<dev types = "10"/>
 	</common>
 
 	<localAddr>
@@ -13,7 +14,7 @@
 	</localAddr>
 
 	<downFirmware>
-		<firmware path="./"  name="file" version="1" /> 
+		<firmware dev_type="1" path="./"  name="file" version="1" /> 
 	</downFirmware>
 </config>
 

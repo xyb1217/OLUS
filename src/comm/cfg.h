@@ -2,6 +2,7 @@
 #define _CFG_H_
 
 #include <string.h>
+#include "cache/down_manage.h"
 
 
 class Cfg
@@ -16,6 +17,7 @@ class Cfg
     public:
         int threads(){return threads_;}
         int log_level(){return log_level_;}
+        int dev_types(){return dev_types_;}
         int listen_port(){return listen_port_;}
         char *run_id(){return run_id_;}
         char *firmware_path(){return firmware_path_;}
@@ -33,12 +35,14 @@ class Cfg
             firmware_name_ = NULL;
             firmware_version_ = NULL;
             listen_ip_ = NULL;
+            down_info_ = NULL;
         }
         bool load(const char *cfg_file);
         
     private:
         int threads_;
         int log_level_;
+        int dev_types_;
         int listen_port_;
         char *listen_ip_;
         char *run_id_;
@@ -46,6 +50,8 @@ class Cfg
         char *firmware_name_;
         unsigned char firmware_version_;
         char *firmware_file_;
+
+        DownInfo *down_info_;
 };
 
 

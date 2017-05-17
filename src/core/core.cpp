@@ -38,7 +38,7 @@ int Core::process(int fd)
     }
     
     ret = parse();
-    if (ret != 0) {
+    if (ret == -1) {
 		SVC_LOG((LM_ERROR, "parse failed"));
         return -1;
     }
@@ -89,7 +89,6 @@ int Core::readn()
 }
 
 
-
 int Core::parse()
 {
     //½âÎö
@@ -110,7 +109,7 @@ int Core::parse()
         ret = firmware_down();
         if (ret != 0){
             SVC_LOG((LM_ERROR, "down firmware failed"));
-            return -1;
+            return ret;
         }
     }
     else {
@@ -126,10 +125,7 @@ int Core::version_query()
 {
     QueryVersion query_version;
     int ret = query_version.process(olup_);
-    if (ret != 0){
-        return -1;
-    }
-    return 0;
+    return ret;
 }
 
 
@@ -137,10 +133,7 @@ int Core::firmware_down()
 {
     DownFirmware down_firmware;
     int ret = down_firmware.process(olup_);
-    if (ret != 0){
-        return -1;
-    }
-    return 0;
+    return ret;
 }
 
 

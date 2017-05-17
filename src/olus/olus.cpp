@@ -49,6 +49,7 @@ void init()
     CLog *pLog = CLog::inst();
 	if (!pLog->init(LOG_PATH, "olus")){
 		PRINTF("init log error, exit");
+        sleep(3);
 		exit(1);
 	}
 
@@ -56,12 +57,14 @@ void init()
 	if (pLog->open(1) == -1){
 		pLog->finalize();
 		PRINTF("start log error, exit");
+        sleep(3);
 		exit(1);
 	}
 
     bool bret = Cfg::inst().init(CFG_FILE);
 	if (!bret){
 		PRINTF("init cfg error, exit");
+        sleep(3);
 		exit(1);
 	}
 
@@ -76,6 +79,7 @@ void im()
     int ret = im_srv.process();
     if (ret != 0){
         PRINTF("init im srv error, exit");
+        sleep(3);
 		exit(1);
     }
     return ;
