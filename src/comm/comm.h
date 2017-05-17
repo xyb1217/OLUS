@@ -4,6 +4,7 @@
 
 #include <string.h>
 #include <stdio.h>
+#include <arpa/inet.h>
 
 #define CMD_VERSION_QUERY 0x10
 #define CMD_FIRMWARE_DOWN 0x20
@@ -118,6 +119,13 @@ struct FirmwareResp
     }
 };
 #pragma pack ()
+
+
+extern void n2h_oluph(OLUPH & oluph);
+extern void h2n_oluph(OLUPH & oluph);
+extern void n2h_firmware_resp(FirmwareResp & firmware_resp);
+extern void h2n_firmware_resp(FirmwareResp & firmware_resp);
+
 
 
 #endif

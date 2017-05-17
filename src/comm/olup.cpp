@@ -10,6 +10,7 @@ int OLUP::process(const char *in, int len)
     }
     
     memcpy(&oluph_, in, sizeof(OLUPH));
+    oluph_.dev_id = ntohl(oluph_.dev_id);
     oluph_.pinfo();
 
     if ((oluph_.flag1 != 0x5A) && (oluph_.flag1 != 0xA5)){

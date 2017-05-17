@@ -14,7 +14,9 @@ int main(int argc, char *argv[])
     oluph.len = 0x08;
     oluph.cmd = 0x20;
     oluph.dev_id = 0x00000001;
-    oluph.dev_type = 0x01;
+    oluph.dev_id = htonl(oluph.dev_id);
+    //oluph.dev_type = 0x01;
+    oluph.dev_type = 0x02;
     FirmwareDown firmware_down;
     firmware_down.check = 0x00;
     firmware_down.end = 0xEE;
@@ -57,6 +59,8 @@ int main(int argc, char *argv[])
         printf("recvn FirmwareResp error\n");
         return -1;
     }
+    
+    firmware_resp.down_size = ntohl(firmware_resp.down_size);
     firmware_resp.pinfo();
 
     char *down_info = new char [firmware_resp.down_size];

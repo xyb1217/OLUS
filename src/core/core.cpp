@@ -170,8 +170,10 @@ int Core::response()
             SVC_LOG((LM_ERROR, "writen OLUPH failed"));
             return -1;
         }
-        
-        writen = Writen(curr_fd_, olup_.firmware_resp(), sizeof(FirmwareResp));
+
+        FirmwareResp *firmware_resp = olup_.firmware_resp();
+        firmware_resp->down_size = htonl(firmware_resp->down_size);
+        writen = Writen(curr_fd_, firmware_resp, sizeof(FirmwareResp));
         if (writen != sizeof(FirmwareResp)){
             SVC_LOG((LM_ERROR, "writen FirmwareResp failed"));
             return -1;

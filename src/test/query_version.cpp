@@ -14,7 +14,9 @@ int main(int argc, char *argv[])
     oluph.len = 0x08;
     oluph.cmd = 0x10;
     oluph.dev_id = 0x00000001;
-    oluph.dev_type = 0x01;
+    oluph.dev_id = htonl(oluph.dev_id);
+    //oluph.dev_type = 0x01;
+    oluph.dev_type = 0x02;
     VersionQuery version_query;
     version_query.check = 0x00;
     version_query.end = 0xEE;
