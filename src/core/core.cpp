@@ -5,6 +5,7 @@
 #include <string.h>
 #include <sys/types.h>
 #include <stdio.h>
+#include <unistd.h>
 
 #include <ccm/im_util.h>
 #include <ccm/clog.h>
@@ -33,8 +34,9 @@ int Core::process(int fd)
     curr_fd_ = fd;
     int ret = readn();
     if (ret != 0){
-		SVC_LOG((LM_ERROR, "rcv data failed"));
-        return -1;
+        if (ret == -1)
+    		SVC_LOG((LM_ERROR, "rcv data failed"));
+        return ret;
     }
     
     ret = parse();
@@ -45,21 +47,31 @@ int Core::process(int fd)
 
     ret = response();
     if (ret != 0) {
-		SVC_LOG((LM_ERROR, "response failed"));
-        return -1;
+        if (ret == -1)
+    		SVC_LOG((LM_ERROR, "response failed"));
+        return ret;
     }
     return 0;
 }
 
 
-
+//return
+//1: client close
+//0: ok
+//-1: error
 int Core::readn()
 {
     //parse head: flag1,flag2,len
     char head[3] = {0};
     ssize_t recvn = RecvTimeout(curr_fd_, head, 3, 3);
+    if (recvn == 0){
+        //client close
+		SVC_LOG((LM_ERROR, "client close, recvn:%d", recvn));
+        return 1;
+    }
+    
     if (recvn != 3){
-		SVC_LOG((LM_ERROR, "read the first 3 bytes error, recvn:%u", recvn));
+		SVC_LOG((LM_ERROR, "read the first 3 bytes error, recvn:%d", recvn));
         return -1;
     }
 
@@ -80,6 +92,12 @@ int Core::readn()
     memcpy(rcv_buffer_, head, 3);
 
     recvn = RecvTimeout(curr_fd_, rcv_buffer_+3, head[2], 3);
+    if (recvn == 0){
+        //client close
+		SVC_LOG((LM_ERROR, "client close, recvn:%d", recvn));
+        return 1;
+    }
+    
     if (recvn != head[2]){
 		SVC_LOG((LM_ERROR, "read body error"));
         return -1;
@@ -89,6 +107,7 @@ int Core::readn()
 }
 
 
+//1: no update
 int Core::parse()
 {
     //解析
@@ -145,17 +164,18 @@ int Core::response()
         OLUPH *oluph = olup_.oluph();
         oluph->len = 0x09;
         oluph->cmd = 0x90;
-
+        
+        oluph->dev_id = htonl(oluph->dev_id);
         ssize_t writen = Writen(curr_fd_, olup_.oluph(), sizeof(OLUPH));
         if (writen != sizeof(OLUPH)){
             SVC_LOG((LM_ERROR, "writen OLUPH failed"));
-            return -1;
+            return 1;
         }
         
         writen = Writen(curr_fd_, olup_.version_resp(), sizeof(VersionResp));
         if (writen != sizeof(VersionResp)){
             SVC_LOG((LM_ERROR, "writen VersionResp failed"));
-            return -1;
+            return 1;
         }
         
     }
@@ -164,11 +184,12 @@ int Core::response()
         OLUPH *oluph = olup_.oluph();
         oluph->len = 0x0D;
         oluph->cmd = 0xA0;
-
+    
+        oluph->dev_id = htonl(oluph->dev_id);
         ssize_t writen = Writen(curr_fd_, olup_.oluph(), sizeof(OLUPH));
         if (writen != sizeof(OLUPH)){
             SVC_LOG((LM_ERROR, "writen OLUPH failed"));
-            return -1;
+            return 1;
         }
 
         FirmwareResp *firmware_resp = olup_.firmware_resp();
@@ -176,14 +197,20 @@ int Core::response()
         writen = Writen(curr_fd_, firmware_resp, sizeof(FirmwareResp));
         if (writen != sizeof(FirmwareResp)){
             SVC_LOG((LM_ERROR, "writen FirmwareResp failed"));
-            return -1;
+            return 1;
         }
         
-        writen = Writen(curr_fd_, olup_.down_info(), olup_.down_size());
+        sleep(5);
+        //writen = Writen(curr_fd_, olup_.down_info(), olup_.down_size());
+        writen = Sendn(curr_fd_, olup_.down_info(), olup_.down_size());
         if (writen != olup_.down_size()){
-            SVC_LOG((LM_ERROR, "writen down info failed"));
-            return -1;
+            SVC_LOG((LM_ERROR, "writen down info failed, writen:%d", writen));
+            return 1;
         }
+
+        //下载完成关闭fd
+        //return 1;
+        return 0;
     }
     else {
         SVC_LOG((LM_ERROR, "on line update protocol cmd error"));

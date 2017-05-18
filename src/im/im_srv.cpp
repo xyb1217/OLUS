@@ -27,10 +27,7 @@ int ImSrv::process()
 int ImSrv::parse(int fd)
 {
     Core core;
-    int ret = core.process(fd);
-    if (ret != 0)
-        return -1;
-    return 0;
+    return core.process(fd);
 }
 
 

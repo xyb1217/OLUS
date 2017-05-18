@@ -33,7 +33,7 @@ class Cfg
             run_id_ = NULL;
             firmware_path_ = NULL;
             firmware_name_ = NULL;
-            firmware_version_ = NULL;
+            firmware_version_ = 0;
             listen_ip_ = NULL;
             down_info_ = NULL;
         }

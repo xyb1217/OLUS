@@ -8,6 +8,11 @@
 
 int main(int argc, char *argv[])
 {
+    if (argc < 3){
+        printf("param error, argc:%d\n", argc);
+        return -1;
+    }
+    
     OLUPH oluph;
     oluph.flag1 = 0x5A;
     oluph.flag2 = 0xA5;
@@ -15,8 +20,8 @@ int main(int argc, char *argv[])
     oluph.cmd = 0x20;
     oluph.dev_id = 0x00000001;
     oluph.dev_id = htonl(oluph.dev_id);
-    //oluph.dev_type = 0x01;
-    oluph.dev_type = 0x02;
+    oluph.dev_type = 0x01;
+    //oluph.dev_type = 0x02;
     FirmwareDown firmware_down;
     firmware_down.check = 0x00;
     firmware_down.end = 0xEE;
@@ -51,6 +56,7 @@ int main(int argc, char *argv[])
         printf("recvn OLUPH error\n");
         return -1;
     }
+    oluph.dev_id = ntohl(oluph.dev_id);
     oluph.pinfo();
     
     FirmwareResp firmware_resp;
@@ -69,7 +75,7 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    recvn = RecvTimeout(fd, down_info, firmware_resp.down_size, 3);
+    recvn = RecvTimeout(fd, down_info, firmware_resp.down_size, 7);
     if (recvn != firmware_resp.down_size){
         printf("recvn down info error\n");
         if (down_info) delete [] down_info;
