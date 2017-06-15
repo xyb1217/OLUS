@@ -37,6 +37,8 @@ class OLUP
         VersionResp *version_resp(){return &version_resp_;}
         FirmwareDown *firmware_down(){return &firmware_down_;}
         FirmwareResp *firmware_resp(){return &firmware_resp_;}
+        UpdateInfo *update_info(){return &update_info_;}
+        UpdateInfoResp *update_info_resp(){return &update_info_resp_;}
         char *down_info(){return down_info_;}
         int down_size(){return down_size_;}
         void set_down_info(char *down_info, int down_size){
@@ -52,6 +54,8 @@ class OLUP
         VersionResp version_resp_;
         FirmwareDown firmware_down_;
         FirmwareResp firmware_resp_;
+        UpdateInfo update_info_;
+        UpdateInfoResp update_info_resp_;
         char *down_info_;
         int down_size_;
 };

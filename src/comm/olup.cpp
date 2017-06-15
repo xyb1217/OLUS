@@ -34,6 +34,17 @@ int OLUP::process(const char *in, int len)
         memcpy(&firmware_down_, in+sizeof(OLUPH), sizeof(FirmwareDown));
         firmware_down_.pinfo();
     }
+    else if (oluph_.cmd == CMD_UPDATE_INFO){
+        int len = sizeof(OLUPH);
+        memcpy(update_info_.dev_num_len, in+len, 1);
+        len = sizeof(OLUPH)+1;
+        memcpy(update_info_.dev_num, in+len, update_info_.dev_num_len);
+        len = sizeof(OLUPH)+1+update_info_.dev_num_len;
+        memcpy(update_info_.check, in+len, 1);
+        len = sizeof(OLUPH)+1+update_info_.dev_num_len+1;
+        memcpy(update_info_.end, in+len, 1);
+        update_info_.pinfo();
+    }
     else {
 		SVC_LOG((LM_ERROR, "protocol cmd error"));
         return -1;

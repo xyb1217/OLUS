@@ -18,6 +18,7 @@ class Core
         int parse();
         int version_query();
         int firmware_down();
+        int update_info();
         int response();
 
     private:

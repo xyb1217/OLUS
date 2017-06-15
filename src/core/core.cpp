@@ -131,6 +131,13 @@ int Core::parse()
             return ret;
         }
     }
+    else if (olup_.cmd() == CMD_UPDATE_INFO){
+        ret = update_info();
+        if (ret != 0){
+            SVC_LOG((LM_ERROR, "report update info failed"));
+            return ret;
+        }
+    }
     else {
 		SVC_LOG((LM_ERROR, "on line update protocol cmd error"));
         return -1;
@@ -154,6 +161,15 @@ int Core::firmware_down()
     int ret = down_firmware.process(olup_);
     return ret;
 }
+
+
+int Core::update_info()
+{
+    UpdateInfo update_info;
+    int ret = update_info.process(olup_);
+    return ret;
+}
+
 
 
 int Core::response()
@@ -211,6 +227,26 @@ int Core::response()
         //下载完成关闭fd
         //return 1;
         return 0;
+    }
+    else if (olup_.cmd() == CMD_UPDATE_INFO){
+        
+        OLUPH *oluph = olup_.oluph();
+        oluph->len = 0x09;
+        oluph->cmd = 0xB0;
+        
+        oluph->dev_id = htonl(oluph->dev_id);
+        ssize_t writen = Writen(curr_fd_, olup_.oluph(), sizeof(OLUPH));
+        if (writen != sizeof(OLUPH)){
+            SVC_LOG((LM_ERROR, "writen OLUPH failed"));
+            return 1;
+        }
+        
+        writen = Writen(curr_fd_, olup_.update_info_resp(), sizeof(UpdateInfo));
+        if (writen != sizeof(UpdateInfo)){
+            SVC_LOG((LM_ERROR, "writen UpdateInfo failed"));
+            return 1;
+        }
+        
     }
     else {
         SVC_LOG((LM_ERROR, "on line update protocol cmd error"));

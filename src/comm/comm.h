@@ -8,11 +8,16 @@
 
 #define CMD_VERSION_QUERY 0x10
 #define CMD_FIRMWARE_DOWN 0x20
+#define CMD_UPDATE_INFO 0x30
 #define CMD_VERSION_RESP  0x90
 #define CMD_FIRMWARE_RESP 0xA0
+#define CMD_UPDATE_INFO_RESP 0xB0
 
 #define LEN_VERSION_QUERY  11
 #define LEN_FIRMWARE_DOWN  11
+
+
+#define MAX_DEV_NUM_LEN 32
 
 #pragma pack (1)
 
@@ -118,6 +123,51 @@ struct FirmwareResp
         printf("***********FirmwareResp**********\n");
     }
 };
+
+
+
+struct UpdateInfo
+{
+    unsigned char dev_num_len;
+    unsigned char dev_num[MAX_DEV_NUM_LEN];
+    unsigned char check;
+    unsigned char end;
+
+    UpdateInfo(){
+        memset(this, 0, sizeof(UpdateInfo));
+    }
+
+    void pinfo(){
+        printf("\n***********UpdateInfo**********\n");
+        printf("dev_num_len:%d\n", dev_num_len);
+        printf("dev_num:%s\n", dev_num);
+        printf("check:%0X\n", check);
+        printf("end:%0X\n", end);
+        printf("***********UpdateInfo**********\n");
+    }
+    
+};
+
+
+struct UpdateInfoResp
+{
+    unsigned char status;
+    unsigned char check;
+    unsigned char end;
+
+    UpdateInfoResp(){
+        memset(this, 0, sizeof(UpdateInfoResp));
+    }
+
+    void pinfo(){
+        printf("\n***********UpdateInfoResp**********\n");
+        printf("status:%0X\n", status);
+        printf("check:%0X\n", check);
+        printf("end:%0X\n", end);
+        printf("***********UpdateInfoResp**********\n");
+    }
+};
+
 #pragma pack ()
 
 
