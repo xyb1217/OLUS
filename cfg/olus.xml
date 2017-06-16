@@ -2,7 +2,7 @@
 <?xml version="1.4" encoding="utf-8"?>
 <config>
 	<common>
-		<run id = "olus_127.0.0.1:8080"/>
+		<run id = "olus_127.0.0.1:8989"/>
 		<thread count = "3"/>
 		<!-- 1:debug, 2:info, 3:warn, 4:error-->
 		<log level = "1"/>
@@ -10,11 +10,11 @@
 	</common>
 
 	<localAddr>
-		<addr ip="127.0.0.1" port="8080"/>
+		<addr ip="127.0.0.1" port="8989"/>
 	</localAddr>
 
 	<downFirmware>
-		<firmware dev_type="1" path="./"  name="file" version="1" /> 
+		<firmware dev_type="1" path="../db/"  name="firmware_sample_file" version="1" /> 
 	</downFirmware>
 </config>
 

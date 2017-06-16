@@ -19,7 +19,7 @@ int ImSrv::process()
         SVC_LOG((LM_INFO, "start sim_srv error"));
         return -1;
     }
-    SVC_LOG((LM_INFO, "start sim_srv success"));
+    SVC_LOG((LM_INFO, "start sim_srv success, port: %d", Cfg::inst().listen_port()));
     return 0;
 }
 

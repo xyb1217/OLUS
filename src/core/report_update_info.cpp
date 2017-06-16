@@ -25,7 +25,7 @@ int ReportUpdateInfo::process(OLUP &olup)
     
     UpdateInfoResp *update_info_resp;
     update_info_resp = olup.update_info_resp();
-    update_info_resp->verify = 0x11;
+    update_info_resp->status = 0x11;
     update_info_resp->check = 0;
     update_info_resp->end = 0xEE;
 
@@ -43,18 +43,24 @@ int ReportUpdateInfo::save_update_info(OLUP &olup)
         SVC_LOG((LM_ERROR, "find down info error"));
         return -1;
     }
+
+    char file_name[256] = {0};
+    sprintf(file_name, "%s%s_%0x", 
+                        down_info->firmware_path, 
+                        SUCCESS_UPDATE_DEV_INFO,  
+                        down_info->dev_type);
     
-    FILE *file = fopen("SUCCESS_UPDATE_DEV_INFO", "w+");
+    FILE *file = fopen(file_name, "a+");
     if (!file) {
-        SVC_LOG((LM_ERROR, "open down file<%s> failed", 
-                            down_info->firmware_file));
+        SVC_LOG((LM_ERROR, "open success dev file<%s> failed", 
+                            file_name));
         return -1;
     }
 
     UpdateInfo *update_info = olup.update_info();
     char buffer[1024] = {0};
     snprintf(buffer, sizeof(buffer), 
-                "%s_%s_%s_%d", 
+                "%0x,%0x,%s,%0x", 
                 oluph->dev_id, oluph->dev_type, 
                 update_info->dev_num, down_info->firmware_version);
     fprintf(file, "%s\n", buffer);

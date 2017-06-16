@@ -17,6 +17,8 @@
 #define CFG_FILE "../cfg/olus.xml"
 #define LOG_PATH "../log/"
 
+ImSrv *im_srv = NULL;
+
 
 void handle_pipe(int sig)
 {
@@ -75,8 +77,14 @@ void init()
 
 void im()
 {
-    ImSrv im_srv;
-    int ret = im_srv.process();
+    im_srv = new ImSrv;
+    if (!im_srv){
+        PRINTF("new ImSrv error, exit");
+        sleep(3);
+		exit(1);
+    }
+    
+    int ret = im_srv->process();
     if (ret != 0){
         PRINTF("init im srv error, exit");
         sleep(3);

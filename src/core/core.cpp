@@ -1,6 +1,7 @@
 #include "core.h"
 #include "down_firmware.h"
 #include "query_version.h"
+#include "report_update_info.h"
 
 #include <string.h>
 #include <sys/types.h>
@@ -165,8 +166,8 @@ int Core::firmware_down()
 
 int Core::update_info()
 {
-    UpdateInfo update_info;
-    int ret = update_info.process(olup_);
+    ReportUpdateInfo report_update_info;
+    int ret = report_update_info.process(olup_);
     return ret;
 }
 

@@ -4,7 +4,8 @@
 
 int OLUP::process(const char *in, int len)
 {
-    if ((len != LEN_VERSION_QUERY) && (len != LEN_FIRMWARE_DOWN)){
+    //if ((len != LEN_VERSION_QUERY) && (len != LEN_FIRMWARE_DOWN)){
+    if ((!in) || (len <= 0)){
 		SVC_LOG((LM_ERROR, "param len error"));
         return -1;
     }
@@ -36,13 +37,14 @@ int OLUP::process(const char *in, int len)
     }
     else if (oluph_.cmd == CMD_UPDATE_INFO){
         int len = sizeof(OLUPH);
-        memcpy(update_info_.dev_num_len, in+len, 1);
+        update_info_.dev_num_len = in[len];
         len = sizeof(OLUPH)+1;
         memcpy(update_info_.dev_num, in+len, update_info_.dev_num_len);
         len = sizeof(OLUPH)+1+update_info_.dev_num_len;
-        memcpy(update_info_.check, in+len, 1);
+        update_info_.check = in[len];
         len = sizeof(OLUPH)+1+update_info_.dev_num_len+1;
-        memcpy(update_info_.end, in+len, 1);
+        update_info_.end = in[len];
+        
         update_info_.pinfo();
     }
     else {
