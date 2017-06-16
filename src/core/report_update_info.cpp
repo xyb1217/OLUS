@@ -19,7 +19,9 @@ int ReportUpdateInfo::process(OLUP &olup)
         return -1;
     }
 
+    pthread_mutex_lock (&mutex_write);
     int ret = save_update_info(olup);
+    pthread_mutex_unlock (&mutex_write);
     if (ret != 0)
         return -1;
     
@@ -44,8 +46,15 @@ int ReportUpdateInfo::save_update_info(OLUP &olup)
         return -1;
     }
 
-    char file_name[256] = {0};
-    sprintf(file_name, "%s%s_%0x", 
+    time_t curr_time = time(NULL);
+    tm *now = localtime(&curr_time);
+    char time_string[20] = {0};
+	snprintf(time_string, sizeof(time_string), "%04d-%02d-%02d %02d:%02d:%02d", 
+							now->tm_year+1900, now->tm_mon+1, now->tm_mday, 
+							now->tm_hour, now->tm_min, now->tm_sec);
+
+    char file_name[128] = {0};
+    snprintf(file_name, sizeof(file_name), "%s%s_%0x", 
                         down_info->firmware_path, 
                         SUCCESS_UPDATE_DEV_INFO,  
                         down_info->dev_type);
@@ -60,8 +69,8 @@ int ReportUpdateInfo::save_update_info(OLUP &olup)
     UpdateInfo *update_info = olup.update_info();
     char buffer[1024] = {0};
     snprintf(buffer, sizeof(buffer), 
-                "%0x,%0x,%s,%0x", 
-                oluph->dev_id, oluph->dev_type, 
+                "%s,%0x,%0x,%s,%0x", 
+                time_string, oluph->dev_id, oluph->dev_type, 
                 update_info->dev_num, down_info->firmware_version);
     fprintf(file, "%s\n", buffer);
     
