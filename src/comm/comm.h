@@ -5,6 +5,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <arpa/inet.h>
+#include <pthread.h>
 
 #define CMD_VERSION_QUERY 0x10
 #define CMD_FIRMWARE_DOWN 0x20
@@ -176,6 +177,8 @@ extern void h2n_oluph(OLUPH & oluph);
 extern void n2h_firmware_resp(FirmwareResp & firmware_resp);
 extern void h2n_firmware_resp(FirmwareResp & firmware_resp);
 
+
+extern pthread_mutex_t mutex_write;
 
 
 #endif

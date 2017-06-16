@@ -26,5 +26,6 @@ void h2n_firmware_resp(FirmwareResp & firmware_resp)
 	return ;
 }
 
+pthread_mutex_t mutex_write;
 
 
