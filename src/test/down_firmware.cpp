@@ -36,24 +36,28 @@ int main(int argc, char *argv[])
     int ret = Connect(fd, argv[1], atoi(argv[2]));
     if (ret != 0){
         printf("Connect error\n");
+        Close()fd);
         return -1;
     }
 
     ssize_t writen = Writen(fd, &oluph, sizeof(OLUPH));
     if (writen != sizeof(OLUPH)){
         printf("Writen OLUPH error\n");
+        Close()fd);
         return -1;
     }
 
     writen = Writen(fd, &firmware_down, sizeof(FirmwareDown));
     if (writen != sizeof(FirmwareDown)){
         printf("Writen FirmwareDown error\n");
+        Close()fd);
         return -1;
     }
 
     ssize_t recvn = RecvTimeout(fd, &oluph, sizeof(OLUPH), 3);
     if (recvn != sizeof(OLUPH)){
         printf("recvn OLUPH error\n");
+        Close()fd);
         return -1;
     }
     oluph.dev_id = ntohl(oluph.dev_id);
@@ -63,6 +67,7 @@ int main(int argc, char *argv[])
     recvn = RecvTimeout(fd, &firmware_resp, sizeof(FirmwareResp), 3);
     if (recvn != sizeof(FirmwareResp)){
         printf("recvn FirmwareResp error\n");
+        Close()fd);
         return -1;
     }
     
@@ -72,18 +77,21 @@ int main(int argc, char *argv[])
     char *down_info = new char [firmware_resp.down_size];
     if (!down_info){
         printf("new down buffer error, size:%d\n", firmware_resp.down_size);
+        Close()fd);
         return -1;
     }
 
-    recvn = RecvTimeout(fd, down_info, firmware_resp.down_size, 7);
+    recvn = RecvTimeout(fd, down_info, firmware_resp.down_size, 10);
     if (recvn != firmware_resp.down_size){
-        printf("recvn down info error\n");
+        printf("recvn down info error, recvn:%d, size:%d\n", 
+                recvn, firmware_resp.down_size);
         if (down_info) delete [] down_info;
+        Close()fd);
         return -1;
     }
     printf("down info: %s\n", down_info);
     if (down_info) delete [] down_info;
-    
+    Close()fd);
     return 0;
 }
 

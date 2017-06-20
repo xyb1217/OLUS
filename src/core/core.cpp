@@ -100,7 +100,7 @@ int Core::readn()
     }
     
     if (recvn != head[2]){
-		SVC_LOG((LM_ERROR, "read body error"));
+		SVC_LOG((LM_ERROR, "read body error, recvn:%d", recvn));
         return -1;
     }
 
@@ -218,8 +218,8 @@ int Core::response()
         }
         
         sleep(5);
-        //writen = Writen(curr_fd_, olup_.down_info(), olup_.down_size());
-        writen = Sendn(curr_fd_, olup_.down_info(), olup_.down_size());
+        writen = Writen(curr_fd_, olup_.down_info(), olup_.down_size());
+        //writen = Sendn(curr_fd_, olup_.down_info(), olup_.down_size());
         if (writen != olup_.down_size()){
             SVC_LOG((LM_ERROR, "writen down info failed, writen:%d", writen));
             return 1;
