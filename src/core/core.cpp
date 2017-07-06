@@ -218,11 +218,30 @@ int Core::response()
         }
         
         sleep(5);
-        writen = Writen(curr_fd_, olup_.down_info(), olup_.down_size());
-        //writen = Sendn(curr_fd_, olup_.down_info(), olup_.down_size());
-        if (writen != olup_.down_size()){
-            SVC_LOG((LM_ERROR, "writen down info failed, writen:%d", writen));
-            return 1;
+        int send_total = 0;
+        int send_per = 8192;
+        int body_len = olup_.down_size();
+        char *send_data = olup_.down_info();
+        while (body_len >= 0){
+            if (body_len >= send_per){
+                writen = Writen(curr_fd_, send_data+send_total, send_per);
+                if (writen != send_per){
+                    SVC_LOG((LM_ERROR, "writen down info failed1, writen:%d, send_per:%d", writen, send_per));
+                    return 1;
+                }
+            }
+            else {
+                writen = Writen(curr_fd_, send_data+send_total, body_len);
+                if (writen != send_per){
+                    SVC_LOG((LM_ERROR, "writen down info failed2, writen:%d, body_len:%d", writen, body_len));
+                    return 1;
+                }
+            }
+            //writen = Writen(curr_fd_, olup_.down_info(), olup_.down_size());
+            //writen = Sendn(curr_fd_, olup_.down_info(), olup_.down_size());
+            
+            send_total += send_per;
+            body_len -= send_per;
         }
 
         //下载完成关闭fd
