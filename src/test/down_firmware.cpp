@@ -83,29 +83,24 @@ int main(int argc, char *argv[])
 
     int recv_total = 0;
     int recv_pre = 1000;
-    int recv_len = firmware_resp.down_size;
-    while (recv_len > 0){
-        if (recv_len >= recv_pre){
-            recvn = RecvTimeout(fd, down_info+recv_total, recv_pre, 10);
-            if (recvn != recv_pre){
-                printf("recvn down info error1, recvn:%d, recv_pre:%d\n", recvn, recv_pre);
-                if (down_info) delete [] down_info;
-                Close(fd);
-                return -1;
-            }
+    int down_size = firmware_resp.down_size;
+    while (down_size > 0){
+        if (down_size >= recv_pre){
+            recvn = Readn(fd, down_info+recv_total, recv_pre);
         }
         else {
-            recvn = RecvTimeout(fd, down_info+recv_total, recv_len, 10);
-            if (recvn != recv_pre){
-                printf("recvn down info error1, recvn:%d, recv_len:%d\n", recvn, recv_len);
-                if (down_info) delete [] down_info;
-                Close(fd);
-                return -1;
-            }
+            recvn = Readn(fd, down_info+recv_total, down_size);
+ 
         }
-        recv_total += recv_pre;
-        recv_len -= recv_pre;
+        recv_total += recvn;
+        down_size -= recvn;
+        printf("recv_total0:%d\n", recv_total);
     }
+
+    printf("recv_total:%d\n", recv_total);
+    printf("recv_pre:%d\n", recv_pre);
+    printf("recv_len:%d\n", down_size);
+    printf("down_size:%d\n", firmware_resp.down_size);
     
     /*recvn = RecvTimeout(fd, down_info, firmware_resp.down_size, 10);
     if (recvn != firmware_resp.down_size){
