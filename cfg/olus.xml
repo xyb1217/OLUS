@@ -14,7 +14,12 @@
 	</localAddr>
 
 	<downFirmware>
-		<firmware dev_type="1" path="../db/"  name="firmware_sample_file" version="1" /> 
+		<firmware dev_type="1" path="../db/"  name="firmware_sample_file-1" version="1" /> 
+		<firmware dev_type="2" path="../db/"  name="firmware_sample_file-2" version="1" /> 		
+		<firmware dev_type="3" path="../db/"  name="firmware_sample_file-3" version="1" /> 
+		<firmware dev_type="4" path="../db/"  name="firmware_sample_file-4" version="1" /> 
+		<firmware dev_type="5" path="../db/"  name="firmware_sample_file-5" version="1" /> 
+		<firmware dev_type="6" path="../db/"  name="firmware_sample_file-6" version="1" /> 
 	</downFirmware>
 </config>
 

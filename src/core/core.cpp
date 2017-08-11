@@ -175,7 +175,12 @@ int Core::update_info()
 
 int Core::response()
 {
-    
+    bool bret = SetSndBuf(curr_fd_, 1300*1024);
+    if (!bret){
+        SVC_LOG((LM_ERROR, "SetSndBuf failed"));
+        return 1;
+    }
+        
     if (olup_.cmd() == CMD_VERSION_QUERY){
         
         OLUPH *oluph = olup_.oluph();
@@ -218,8 +223,10 @@ int Core::response()
         }
         
         sleep(5);
-        int send_total = 0;
+        
+        /*int send_total = 0;
         int send_per = 8192;
+        //int send_per = olup_.down_size();
         int body_len = olup_.down_size();
         char *send_data = olup_.down_info();
         while (body_len >= 0){
@@ -242,10 +249,15 @@ int Core::response()
             
             send_total += send_per;
             body_len -= send_per;
-        }
+        }*/
 
+        writen = Writen(curr_fd_, olup_.down_info(), olup_.down_size());
+        if (writen != olup_.down_size()){
+            SVC_LOG((LM_ERROR, "writen down fialed, writen:%d, body_len:%d", writen, olup_.down_size()));
+            return 1;
+        }
+                
         //下载完成关闭fd
-        //return 1;
         return 0;
     }
     else if (olup_.cmd() == CMD_UPDATE_INFO){

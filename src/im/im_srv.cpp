@@ -10,8 +10,7 @@ SimSrv *sim_srv = NULL;
 
 int ImSrv::process()
 {
-    sim_srv = new SimSrv(ImSrv::parse,  MAX_CONNS, 
-                    Cfg::inst().threads());
+    sim_srv = new SimSrv(ImSrv::parse,  MAX_CONNS, Cfg::inst().threads());
     sim_srv->set_name("sim_srv");
     sim_srv->AddListenPort(Cfg::inst().listen_port());
     bool bret = sim_srv->start();
